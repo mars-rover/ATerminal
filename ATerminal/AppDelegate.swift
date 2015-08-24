@@ -15,10 +15,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        window?.makeKeyAndVisible()
+        let vc = ViewController()
+        window?.rootViewController = vc
+        ptyInit()
         return true
     }
-
+    
+    func ptyInit() {
+        var fd: Int32 = 0
+        var ch: Int8 = 0
+        var ts: termios = termios()
+        var ws: winsize = winsize(ws_row: 320, ws_col: 560, ws_xpixel: 0, ws_ypixel: 0)
+        let pid = forkpty(&fd, &ch, &ts, &ws)
+        print("forkpty succeed, the pid is\(pid)")
+        guard pid != -1 else {
+            print("forkpty failed")
+            fatalError()
+        }
+        
+        if pid == 0 {
+            let userName = "mobile"
+            /*execve(_: UnsafePointer<Int8>, _: UnsafePointer<UnsafeMutablePointer<Int8>>, _: UnsafePointer<UnsafeMutablePointer<Int8>>)*/
+            //let arg1: UnsafePointer<Int8> = "j"
+            //        let result = execve("/usr/bin/login", ["login", "-fp", userName, nil], ["TERM=xterm", nil])
+            //        guard result != -1 else {
+            //            fatalError()
+            //        }
+        }
+        
+        let processID = pid
+    }
+    
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
